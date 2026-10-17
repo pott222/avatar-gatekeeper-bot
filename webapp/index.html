@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Свиток Клана — Avatar Hub</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg-color: #050b14;
+      --card-bg: rgba(10, 25, 47, 0.7);
+      --accent-cyan: #00f2fe;
+      --accent-glow: #4facfe;
+      --text-main: #e0f7fa;
+      --text-dim: #80deea;
+    }
+
+    body {
+      margin: 0;
+      padding: 16px;
+      background: radial-gradient(circle at top, #0d1b2a, var(--bg-color));
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      padding: 12px 0 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: rgba(0, 242, 254, 0.15);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 12px 0 6px;
+      color: #fff;
+      text-shadow: 0 0 12px var(--accent-cyan);
+    }
+
+    p.subtitle {
+      color: var(--text-dim);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid rgba(79, 172, 254, 0.3);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rule-item {
+      display: flex;
+      gap: 10px;
+      font-size: 14px;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .rule-dot {
+      color: var(--accent-cyan);
+    }
+
+    pre.template-box {
+      background: rgba(3, 10, 20, 0.85);
+      border: 1px dashed rgba(0, 242, 254, 0.4);
+      border-radius: 10px;
+      padding: 12px;
+      color: #b2ebf2;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: inherit;
+      margin: 10px 0 14px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-glow), var(--accent-cyan));
+      color: #031321;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+      transition: opacity 0.2s;
+    }
+
+    .btn:active {
+      opacity: 0.85;
+    }
+
+    .toast {
+      visibility: hidden;
+      min-width: 200px;
+      background: #00e676;
+      color: #042010;
+      text-align: center;
+      border-radius: 8px;
+      padding: 10px;
+      position: fixed;
+      z-index: 100;
+      left: 50%;
+      bottom: 30px;
+      transform: translateX(-50%);
+      font-weight: 600;
+      box-shadow: 0 0 10px rgba(0, 230, 118, 0.5);
+    }
+
+    .toast.show {
+      visibility: visible;
+      animation: fadein 0.3s, fadeout 0.3s 1.7s;
+    }
+
+    @keyframes fadein { from { bottom: 10px; opacity: 0; } to { bottom: 30px; opacity: 1; } }
+    @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 10px; opacity: 0; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <span class="badge">Эйва видит тебя</span>
+      <h1>Священный Кодекс</h1>
+      <p class="subtitle">Правила прохода через портал клана</p>
+    </div>
+
+    <div class="card">
+      <h3>📜 1. Закон присутствия</h3>
+      <div class="rule-item">
+        <span class="rule-dot">✦</span>
+        <span>После входа отправь заполненную анкету в течение 24 часов.</span>
+      </div>
+      <div class="rule-item">
+        <span class="rule-dot">✦</span>
+        <span>Сообщение должно быть строго единым текстом без флуда.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📋 2. Формуляр анкеты</h3>
+      <pre class="template-box" id="templateText">1. Имя / Позывной:
+2. Возраст:
+3. Чем занимаешься / Чем полезен клану:
+4. Цель вступления:
+5. О себе в двух предложениях:</pre>
+      <button class="btn" onclick="copyTemplate()">Скопировать анкету</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">✨ Скопировано в буфер!</div>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.expand();
+      tg.ready();
+    }
+
+    function copyTemplate() {
+      const text = document.getElementById("templateText").innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast();
+        if (tg?.HapticFeedback) {
+          tg.HapticFeedback.notificationOccurred('success');
+        }
+      });
+    }
+
+    function showToast() {
+      const t = document.getElementById("toast");
+      t.className = "toast show";
+      setTimeout(() => { t.className = t.className.replace("show", ""); }, 2000);
+    }
+  </script>
+</body>
+</html>
